@@ -15,6 +15,7 @@ class PixelWall {
         this.WALL_SIZE = 1000;
         this.MIN_BLOCK_SIZE = 10;
         this.GRID_SIZE = 100; // For tiling future optimization
+        this.API_BASE_URL = 'http://localhost:3000/api';
         
         // State
         this.ads = [];
@@ -37,7 +38,7 @@ class PixelWall {
      */
     async init() {
         try {
-            // Load ad data
+            // Load ad data from API
             await this.loadAdData();
             
             // Render the wall
@@ -58,18 +59,18 @@ class PixelWall {
     }
     
     /**
-     * Load ad data from JSON file
+     * Load ad data from API
      */
     async loadAdData() {
         try {
-            const response = await fetch('data/ads.json');
+            const response = await fetch(`${this.API_BASE_URL}/ads`);
             if (!response.ok) {
-                throw new Error('Failed to load ad data');
+                throw new Error('Failed to load ad data from API');
             }
-            const data = await response.json();
-            this.ads = data.ads || [];
+            const result = await response.json();
+            this.ads = result.data || [];
         } catch (error) {
-            console.warn('No ad data found, starting with empty wall:', error);
+            console.warn('Failed to load ads from API, starting with empty wall:', error);
             this.ads = [];
         }
     }
@@ -86,7 +87,7 @@ class PixelWall {
             this.createAdBlock(ad, index);
         });
         
-        // Render empty clickable blocks (sample grid for demo)
+        // Render empty clickable blocks
         this.createEmptyBlocks();
     }
     
@@ -152,7 +153,7 @@ class PixelWall {
      */
     calculateEmptySpaces() {
         const emptySpaces = [];
-        const gridSize = 100; // Check in 100px blocks for demo
+        const gridSize = 100; // Check in 100px blocks
         
         for (let y = 0; y < this.WALL_SIZE; y += gridSize) {
             for (let x = 0; x < this.WALL_SIZE; x += gridSize) {
@@ -248,14 +249,30 @@ class PixelWall {
     }
     
     /**
-     * Update statistics
+     * Update statistics from API
      */
-    updateStats() {
-        const pixelsSold = this.ads.reduce((sum, ad) => {
-            return sum + (ad.width * ad.height);
-        }, 0);
-        
-        this.pixelsSoldElement.textContent = pixelsSold.toLocaleString();
+    async updateStats() {
+        try {
+            const response = await fetch(`${this.API_BASE_URL}/ads/stats`);
+            if (response.ok) {
+                const result = await response.json();
+                const pixelsSold = result.data.occupiedPixels;
+                this.pixelsSoldElement.textContent = pixelsSold.toLocaleString();
+            } else {
+                // Fallback to local calculation
+                const pixelsSold = this.ads.reduce((sum, ad) => {
+                    return sum + (ad.width * ad.height);
+                }, 0);
+                this.pixelsSoldElement.textContent = pixelsSold.toLocaleString();
+            }
+        } catch (error) {
+            console.error('Error fetching stats:', error);
+            // Fallback to local calculation
+            const pixelsSold = this.ads.reduce((sum, ad) => {
+                return sum + (ad.width * ad.height);
+            }, 0);
+            this.pixelsSoldElement.textContent = pixelsSold.toLocaleString();
+        }
     }
     
     /**

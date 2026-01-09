@@ -1,0 +1,41 @@
+
+> million-pixel-wall-backend@1.0.0 start
+> node server.js
+
+
+╔════════════════════════════════════════════╗
+║  Million Pixel Wall API Server             ║
+║  Environment: development                   ║
+║  Port: 3000                               ║
+║  CORS Origin: http://localhost:8000   ║
+╚════════════════════════════════════════════╝
+  
+✓ Database connected successfully via psql
+Slow query detected: {
+  text: '\n' +
+    '    SELECT \n' +
+    '      id, x, y, width, height, business_name, description,\n' +
+    '      image_url, target_url, alt, created_at\n' +
+    '    FROM ads \n' +
+    "    WHERE status = 'active'\n" +
+    '    ORDER BY created_at DESC\n' +
+    '  ',
+  duration: 2160,
+  rows: 0
+}
+[0mGET /api/ads [32m200[0m 2165.708 ms - 26[0m
+Slow query detected: {
+  text: '\n' +
+    '    SELECT \n' +
+    '      COALESCE(SUM(width * height), 0) as occupied_pixels,\n' +
+    '      COUNT(*) as total_ads,\n' +
+    '      COALESCE(SUM(price), 0) as total_revenue\n' +
+    '    FROM ads \n' +
+    "    WHERE status = 'active'\n" +
+    '  ',
+  duration: 2650,
+  rows: 1
+}
+[0mGET /api/ads/stats [32m200[0m 2650.755 ms - 128[0m
+SIGINT signal received: closing HTTP server
+HTTP server closed

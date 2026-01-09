@@ -1,0 +1,32 @@
+127.0.0.1 - - [09/Jan/2026 18:32:21] "GET /js/purchase.js HTTP/1.1" 200 -
+127.0.0.1 - - [09/Jan/2026 18:33:17] "GET / HTTP/1.1" 304 -
+127.0.0.1 - - [09/Jan/2026 18:33:17] "GET /css/style.css HTTP/1.1" 304 -
+127.0.0.1 - - [09/Jan/2026 18:33:17] "GET /js/lenis.min.js HTTP/1.1" 304 -
+127.0.0.1 - - [09/Jan/2026 18:33:17] "GET /js/wall.js HTTP/1.1" 304 -
+127.0.0.1 - - [09/Jan/2026 18:33:22] "GET /js/purchase.js HTTP/1.1" 200 -
+127.0.0.1 - - [09/Jan/2026 18:36:10] "GET /purchase.html HTTP/1.1" 200 -
+127.0.0.1 - - [09/Jan/2026 18:36:10] "GET /js/purchase.js HTTP/1.1" 304 -
+127.0.0.1 - - [09/Jan/2026 18:36:49] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [09/Jan/2026 18:36:49] "GET /purchase.html HTTP/1.1" 200 -
+127.0.0.1 - - [09/Jan/2026 18:36:49] "GET /js/purchase.js HTTP/1.1" 200 -
+127.0.0.1 - - [09/Jan/2026 18:39:30] "GET / HTTP/1.1" 304 -
+127.0.0.1 - - [09/Jan/2026 18:39:30] "GET /js/wall.js HTTP/1.1" 200 -
+127.0.0.1 - - [09/Jan/2026 18:39:32] "GET /purchase.html HTTP/1.1" 200 -
+127.0.0.1 - - [09/Jan/2026 18:39:32] "GET /js/purchase.js HTTP/1.1" 200 -
+127.0.0.1 - - [09/Jan/2026 18:41:13] code 404, message File not found
+127.0.0.1 - - [09/Jan/2026 18:41:13] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+127.0.0.1 - - [09/Jan/2026 18:44:43] "GET /purchase.html HTTP/1.1" 304 -
+127.0.0.1 - - [09/Jan/2026 18:44:43] "GET /css/style.css HTTP/1.1" 304 -
+127.0.0.1 - - [09/Jan/2026 18:44:43] "GET /js/purchase.js HTTP/1.1" 304 -
+127.0.0.1 - - [09/Jan/2026 18:45:03] "GET /index.html HTTP/1.1" 200 -
+127.0.0.1 - - [09/Jan/2026 18:45:03] "GET /js/wall.js HTTP/1.1" 304 -
+192.168.0.101 - - [09/Jan/2026 18:45:16] code 404, message File not found
+192.168.0.101 - - [09/Jan/2026 18:45:16] "GET /favicon.ico HTTP/1.1" 404 -
+192.168.0.101 - - [09/Jan/2026 18:45:17] "GET / HTTP/1.1" 304 -
+192.168.0.101 - - [09/Jan/2026 18:45:17] "GET /css/style.css HTTP/1.1" 304 -
+192.168.0.101 - - [09/Jan/2026 18:45:17] "GET /js/lenis.min.js HTTP/1.1" 304 -
+192.168.0.101 - - [09/Jan/2026 18:45:17] "GET /js/wall.js HTTP/1.1" 200 -
+192.168.0.101 - - [09/Jan/2026 18:46:02] "GET / HTTP/1.1" 304 -
+192.168.0.101 - - [09/Jan/2026 18:46:02] "GET /js/wall.js HTTP/1.1" 304 -
+127.0.0.1 - - [09/Jan/2026 18:47:45] "GET /index.html HTTP/1.1" 304 -
+127.0.0.1 - - [09/Jan/2026 18:47:45] "GET /js/wall.js HTTP/1.1" 304 -

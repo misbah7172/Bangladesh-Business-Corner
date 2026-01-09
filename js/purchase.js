@@ -9,6 +9,7 @@ class PurchaseManager {
         this.WALL_SIZE = 1000;
         this.MIN_SIZE = 1; // Minimum 1 pixel
         this.PRICE_PER_PIXEL = 1; // ৳1 per pixel
+        this.API_BASE_URL = 'http://localhost:3000/api';
         
         // State
         this.ads = [];
@@ -36,7 +37,7 @@ class PurchaseManager {
      * Initialize the purchase manager
      */
     async init() {
-        // Load existing ads
+        // Load existing ads from API
         await this.loadAdData();
         
         // Parse URL parameters (if coming from wall click)
@@ -47,20 +48,23 @@ class PurchaseManager {
         
         // Calculate initial cost
         this.updateCost();
+        
+        // Update available pixels display
+        await this.updateAvailablePixels();
     }
     
     /**
-     * Load existing ad data to check availability
+     * Load existing ad data from API to check availability
      */
     async loadAdData() {
         try {
-            const response = await fetch('data/ads.json');
+            const response = await fetch(`${this.API_BASE_URL}/ads`);
             if (response.ok) {
-                const data = await response.json();
-                this.ads = data.ads || [];
+                const result = await response.json();
+                this.ads = result.data || [];
             }
         } catch (error) {
-            console.warn('Could not load existing ads:', error);
+            console.warn('Could not load existing ads from API:', error);
             this.ads = [];
         }
     }
@@ -100,28 +104,43 @@ class PurchaseManager {
         this.imageUrlInput.addEventListener('input', () => this.updatePreview());
         this.imageUrlInput.addEventListener('blur', () => this.updatePreview());
         
-        // Check availability button
-        this.checkButton.addEventListener('click', () => this.checkAvailability());
+        // Check availability button (async handler)
+        this.checkButton.addEventListener('click', async () => {
+            this.checkButton.disabled = true;
+            this.checkButton.textContent = 'Checking...';
+            try {
+                await this.checkAvailability();
+            } finally {
+                this.checkButton.disabled = false;
+                this.checkButton.textContent = 'Check Availability';
+            }
+        });
         
-        // Form submission
-        this.form.addEventListener('submit', (e) => this.handleSubmit(e));
+        // Form submission (async handler)
+        this.form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await this.handleSubmit(e);
+        });
     }
     
     /**
-     * Calculate and update available individual pixels
+     * Calculate and update available individual pixels from API
      */
-    updateAvailablePixels() {
-        const totalPixels = this.WALL_SIZE * this.WALL_SIZE; // 1,000,000
-        const occupiedPixels = this.ads.reduce((sum, ad) => {
-            return sum + (ad.width * ad.height);
-        }, 0);
-        
-        const availablePixels = totalPixels - occupiedPixels;
-        
-        if (this.availablePixelsElement) {
-            this.availablePixelsElement.textContent = availablePixels.toLocaleString();
+    async updateAvailablePixels() {
+        try {
+            const response = await fetch(`${this.API_BASE_URL}/ads/stats`);
+            if (response.ok) {
+                const result = await response.json();
+                const availablePixels = result.data.availablePixels;
+                
+                if (this.availablePixelsElement) {
+                    this.availablePixelsElement.textContent = availablePixels.toLocaleString();
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching stats:', error);
+            this.showMessage('Unable to connect to server. Please ensure backend is running.', 'error');
         }
-    }
     }
     
     /**
@@ -205,9 +224,9 @@ class PurchaseManager {
     }
     
     /**
-     * Check if the selected space is available
+     * Check if the selected space is available using API
      */
-    checkAvailability() {
+    async checkAvailability() {
         const width = parseInt(this.widthInput.value);
         const height = parseInt(this.heightInput.value);
         
@@ -223,22 +242,33 @@ class PurchaseManager {
             return;
         }
         
-        // Check if requested size fits in remaining pixels
-        const totalPixels = this.WALL_SIZE * this.WALL_SIZE;
-        const occupiedPixels = this.ads.reduce((sum, ad) => sum + (ad.width * ad.height), 0);
-        const availablePixels = totalPixels - occupiedPixels;
-        const requestedPixels = width * height;
-        
-        if (requestedPixels > availablePixels) {
+        try {
+            // Get stats from API
+            const response = await fetch(`${this.API_BASE_URL}/ads/stats`);
+            if (!response.ok) throw new Error('Failed to fetch stats');
+            
+            const result = await response.json();
+            const availablePixels = result.data.availablePixels;
+            const requestedPixels = width * height;
+            
+            if (requestedPixels > availablePixels) {
+                this.showMessage(
+                    `Not enough space! You requested ${requestedPixels.toLocaleString()} pixels but only ${availablePixels.toLocaleString()} individual pixels are available.`,
+                    'error'
+                );
+            } else {
+                const totalCost = requestedPixels * this.PRICE_PER_PIXEL;
+                this.showMessage(
+                    `✓ Space is available! Total cost: ৳${totalCost.toLocaleString()} for ${requestedPixels.toLocaleString()} pixels.`,
+                    'success'
+                );
+            }
+        } catch (error) {
+            console.error('Error checking availability:', error);
             this.showMessage(
-                `Not enough space! You requested ${requestedPixels.toLocaleString()} pixels but only ${availablePixels.toLocaleString()} individual pixels are available.`,
+                `⚠️ Could not check availability: ${error.message}. ` +
+                `Backend server must be running on http://localhost:3000`,
                 'error'
-            );
-        } else {
-            const totalCost = requestedPixels * this.PRICE_PER_PIXEL;
-            this.showMessage(
-                `Space is available! Total cost: ৳${totalCost.toLocaleString()} for ${requestedPixels.toLocaleString()} pixels.`,
-                'success'
             );
         }
     }
@@ -258,10 +288,10 @@ class PurchaseManager {
     }
     
     /**
-     * Handle form submission
+     * Handle form submission with API
      */
-    handleSubmit(e) {
-        e.preventDefault();
+    async handleSubmit(e) {
+        // e.preventDefault is handled by the event listener now
         
         // Get form values (position will be assigned by backend)
         const adData = {
@@ -279,51 +309,60 @@ class PurchaseManager {
             return;
         }
         
-        // Check if enough pixels are available
-        const totalPixels = this.WALL_SIZE * this.WALL_SIZE;
-        const occupiedPixels = this.ads.reduce((sum, ad) => sum + (ad.width * ad.height), 0);
-        const availablePixels = totalPixels - occupiedPixels;
-        const requestedPixels = adData.width * adData.height;
+        // Show loading state
+        const submitButton = this.form.querySelector('button[type="submit"]');
+        const originalText = submitButton.textContent;
+        submitButton.disabled = true;
+        submitButton.textContent = 'Processing...';
         
-        if (requestedPixels > availablePixels) {
+        try {
+            // Send ad data to API
+            const response = await fetch(`${this.API_BASE_URL}/ads`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(adData)
+            });
+            
+            const result = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(result.message || 'Failed to create ad');
+            }
+            
+            // Success!
+            const ad = result.data;
+            const totalPixels = ad.width * ad.height;
+            const totalCost = ad.price;
+            
             this.showMessage(
-                `Not enough space available. Requested: ${requestedPixels.toLocaleString()} pixels, Available: ${availablePixels.toLocaleString()} pixels.`,
+                `Success! Your ad has been created at position (${ad.x}, ${ad.y}). ` +
+                `Size: ${ad.width}×${ad.height} pixels (${totalPixels.toLocaleString()} pixels) ` +
+                `Cost: ৳${totalCost.toLocaleString()}. ` +
+                `Your ad is now live on the wall! <a href="index.html">View the wall</a>`,
+                'success'
+            );
+            
+            // Disable form
+            this.form.querySelectorAll('input, textarea, button').forEach(el => el.disabled = true);
+            
+        } catch (error) {
+            console.error('Error submitting ad:', error);
+            
+            this.showMessage(
+                `⚠️ Failed to create ad: ${error.message}<br><br>` +
+                `Please ensure:<br>` +
+                `• Backend server is running on http://localhost:3000<br>` +
+                `• Database is connected<br>` +
+                `• All required fields are filled correctly<br><br>` +
+                `<a href="index.html">Return to wall</a>`,
                 'error'
             );
-            return;
+            
+            submitButton.disabled = false;
+            submitButton.textContent = originalText;
         }
-        
-        // Calculate cost
-        const totalPixels = adData.width * adData.height;
-        const totalCost = totalPixels * this.PRICE_PER_PIXEL;
-        
-        // In production, this would:
-        // 1. Send data to backend API
-        // 2. Process payment
-        // 3. Store ad data in database
-        // 4. Return confirmation
-        
-        // For demo, show success message
-        this.showMessage(
-            `Success! Your purchase of ${totalPixels.toLocaleString()} pixels (৳${totalCost.toLocaleString()}) has been submitted. ` +
-            `In production, you would be redirected to payment processing. ` +
-            `After payment, your ad would appear on the wall within 24 hours.`,
-            'success'
-        );
-        
-        // Store in localStorage for demo (simulate backend)
-        this.savePurchase(adData);
-        
-        // Disable form
-        this.form.querySelectorAll('input, button').forEach(el => el.disabled = true);
-        
-        // Show return link
-        setTimeout(() => {
-            this.showMessage(
-                'Thank you for your purchase! <a href="index.html">Return to wall</a>',
-                'info'
-            );
-        }, 3000);
     }
     
     /**
@@ -352,23 +391,6 @@ class PurchaseManager {
         }
         
         return true;
-    }
-    
-    /**
-     * Save purchase to localStorage (demo only)
-     */
-    savePurchase(adData) {
-        try {
-            const purchases = JSON.parse(localStorage.getItem('pixelWallPurchases') || '[]');
-            purchases.push({
-                ...adData,
-                timestamp: new Date().toISOString(),
-                status: 'pending'
-            });
-            localStorage.setItem('pixelWallPurchases', JSON.stringify(purchases));
-        } catch (error) {
-            console.error('Failed to save purchase:', error);
-        }
     }
     
     /**
