@@ -76,7 +76,15 @@ class PixelWall {
                 throw new Error('Failed to load ad data from API');
             }
             const result = await response.json();
-            this.ads = result.data || [];
+            // Convert string values to numbers for positioning
+            this.ads = (result.data || []).map(ad => ({
+                ...ad,
+                x: parseInt(ad.x, 10),
+                y: parseInt(ad.y, 10),
+                width: parseInt(ad.width, 10),
+                height: parseInt(ad.height, 10)
+            }));
+            console.log(`Loaded ${this.ads.length} ads from API`);
         } catch (error) {
             console.warn('Failed to load ads from API, starting with empty wall:', error);
             this.ads = [];

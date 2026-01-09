@@ -64,7 +64,14 @@ class PurchaseManager {
             const response = await fetch(`${this.API_BASE_URL}/ads`);
             if (response.ok) {
                 const result = await response.json();
-                this.ads = result.data || [];
+                // Convert string values to numbers for collision detection
+                this.ads = (result.data || []).map(ad => ({
+                    ...ad,
+                    x: parseInt(ad.x, 10),
+                    y: parseInt(ad.y, 10),
+                    width: parseInt(ad.width, 10),
+                    height: parseInt(ad.height, 10)
+                }));
             }
         } catch (error) {
             console.warn('Could not load existing ads from API:', error);
