@@ -117,6 +117,7 @@ class PixelWall {
         block.style.top = `${ad.y}px`;
         block.style.width = `${ad.width}px`;
         block.style.height = `${ad.height}px`;
+        console.log(`Creating ad block ${index}: x=${ad.x}, y=${ad.y}, w=${ad.width}, h=${ad.height}`);
         
         // Set background image
         if (ad.imageUrl) {
@@ -339,10 +340,12 @@ class PixelWall {
             this.wallElement.style.width = `${this.WALL_SIZE}px`;
             this.wallElement.style.height = `${this.WALL_SIZE}px`;
         } else {
+            // Desktop view - no scaling needed
             this.scale = 1;
-            this.wallElement.style.transform = 'none';
+            this.wallElement.style.transform = '';
             this.wallElement.style.width = `${this.WALL_SIZE}px`;
             this.wallElement.style.height = `${this.WALL_SIZE}px`;
+            console.log('Desktop mode: No scaling applied');
         }
     }
 }

@@ -3,7 +3,7 @@
 ║  Million Pixel Wall API Server             ║
 ║  Environment: development                   ║
 ║  Port: 3000                               ║
-║  CORS Origin: http://localhost:8000   ║
+║  CORS Origin: http://localhost:8000              ║
 ╚════════════════════════════════════════════╝
   
 ✓ Database connected successfully via psql
@@ -16,13 +16,10 @@ Slow query detected: {
     '    FROM ads \n' +
     "    WHERE status = 'active'\n" +
     '  ',
-  duration: 2415,
+  duration: 2181,
   rows: 1
 }
-[0mGET /api/ads/stats [32m200[0m 2426.265 ms - 125[0m
-[0mGET /api/ads [0m-[0m - ms - -[0m
-[0mGET /api/ads [0m-[0m - ms - -[0m
-[0mGET /api/ads [0m-[0m - ms - -[0m
+[0mGET /api/ads/stats [32m200[0m 2184.394 ms - 125[0m
 Slow query detected: {
   text: '\n' +
     '    SELECT \n' +
@@ -32,46 +29,10 @@ Slow query detected: {
     "    WHERE status = 'active'\n" +
     '    ORDER BY created_at DESC\n' +
     '  ',
-  duration: 1949,
+  duration: 2226,
   rows: 2
 }
-Slow query detected: {
-  text: '\n' +
-    '    SELECT \n' +
-    '      id, x, y, width, height, business_name, description,\n' +
-    '      image_url, target_url, alt, created_at\n' +
-    '    FROM ads \n' +
-    "    WHERE status = 'active'\n" +
-    '    ORDER BY created_at DESC\n' +
-    '  ',
-  duration: 2022,
-  rows: 2
-}
-Slow query detected: {
-  text: '\n' +
-    '    SELECT \n' +
-    '      id, x, y, width, height, business_name, description,\n' +
-    '      image_url, target_url, alt, created_at\n' +
-    '    FROM ads \n' +
-    "    WHERE status = 'active'\n" +
-    '    ORDER BY created_at DESC\n' +
-    '  ',
-  duration: 2164,
-  rows: 2
-}
-Slow query detected: {
-  text: '\n' +
-    '    SELECT \n' +
-    '      id, x, y, width, height, business_name, description,\n' +
-    '      image_url, target_url, alt, created_at\n' +
-    '    FROM ads \n' +
-    "    WHERE status = 'active'\n" +
-    '    ORDER BY created_at DESC\n' +
-    '  ',
-  duration: 2019,
-  rows: 2
-}
-[0mGET /api/ads [32m200[0m 2019.936 ms - 595[0m
+[0mGET /api/ads [36m304[0m 2228.722 ms - -[0m
 Slow query detected: {
   text: '\n' +
     '    SELECT \n' +
@@ -81,9 +42,46 @@ Slow query detected: {
     '    FROM ads \n' +
     "    WHERE status = 'active'\n" +
     '  ',
-  duration: 2243,
+  duration: 2241,
   rows: 1
 }
-[0mGET /api/ads/stats [36m304[0m 2244.881 ms - -[0m
-SIGINT signal received: closing HTTP server
-HTTP server closed
+[0mGET /api/ads/stats [36m304[0m 2242.997 ms - -[0m
+Slow query detected: {
+  text: '\n' +
+    '    SELECT \n' +
+    '      id, x, y, width, height, business_name, description,\n' +
+    '      image_url, target_url, alt, created_at\n' +
+    '    FROM ads \n' +
+    "    WHERE status = 'active'\n" +
+    '    ORDER BY created_at DESC\n' +
+    '  ',
+  duration: 2728,
+  rows: 2
+}
+[0mGET /api/ads [36m304[0m 2728.566 ms - -[0m
+Slow query detected: {
+  text: '\n' +
+    '    SELECT \n' +
+    '      COALESCE(SUM(width * height), 0) as occupied_pixels,\n' +
+    '      COUNT(*) as total_ads,\n' +
+    '      COALESCE(SUM(price), 0) as total_revenue\n' +
+    '    FROM ads \n' +
+    "    WHERE status = 'active'\n" +
+    '  ',
+  duration: 2352,
+  rows: 1
+}
+[0mGET /api/ads/stats [36m304[0m 2353.075 ms - -[0m
+Slow query detected: {
+  text: '\n' +
+    '    SELECT \n' +
+    '      id, x, y, width, height, business_name, description,\n' +
+    '      image_url, target_url, alt, created_at\n' +
+    '    FROM ads \n' +
+    "    WHERE status = 'active'\n" +
+    '    ORDER BY created_at DESC\n' +
+    '  ',
+  duration: 2289,
+  rows: 4
+}
+[0mGET /api/ads [32m200[0m 2289.047 ms - 1167[0m

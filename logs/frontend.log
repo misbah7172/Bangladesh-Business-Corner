@@ -1,40 +1,4 @@
-127.0.0.1 - - [09/Jan/2026 19:18:01] "GET /index.html HTTP/1.1" 304 -
-127.0.0.1 - - [09/Jan/2026 19:18:01] "GET /css/style.css HTTP/1.1" 200 -
-127.0.0.1 - - [09/Jan/2026 19:18:01] "GET /js/lenis.min.js HTTP/1.1" 304 -
-127.0.0.1 - - [09/Jan/2026 19:18:01] "GET /js/wall.js HTTP/1.1" 200 -
-127.0.0.1 - - [09/Jan/2026 19:18:02] "GET /index.html HTTP/1.1" 304 -
-127.0.0.1 - - [09/Jan/2026 19:18:02] "GET /css/style.css HTTP/1.1" 304 -
-127.0.0.1 - - [09/Jan/2026 19:18:02] "GET /js/wall.js HTTP/1.1" 304 -
-127.0.0.1 - - [09/Jan/2026 19:18:02] "GET /index.html HTTP/1.1" 304 -
-127.0.0.1 - - [09/Jan/2026 19:18:02] "GET /index.html HTTP/1.1" 304 -
-192.168.0.101 - - [09/Jan/2026 19:18:08] "GET / HTTP/1.1" 304 -
-192.168.0.101 - - [09/Jan/2026 19:18:10] "GET / HTTP/1.1" 304 -
-192.168.0.101 - - [09/Jan/2026 19:18:11] "GET / HTTP/1.1" 304 -
-----------------------------------------
-Exception occurred during processing of request from ('192.168.0.101', 41010)
-Traceback (most recent call last):
-  File "/usr/lib/python3.13/socketserver.py", line 697, in process_request_thread
-    self.finish_request(request, client_address)
-    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/lib/python3.13/http/server.py", line 1342, in finish_request
-    self.RequestHandlerClass(request, client_address, self,
-    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-                             directory=args.directory)
-                             ^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/lib/python3.13/http/server.py", line 683, in __init__
-    super().__init__(*args, **kwargs)
-    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
-  File "/usr/lib/python3.13/socketserver.py", line 766, in __init__
-    self.handle()
-    ~~~~~~~~~~~^^
-  File "/usr/lib/python3.13/http/server.py", line 447, in handle
-    self.handle_one_request()
-    ~~~~~~~~~~~~~~~~~~~~~~~^^
-  File "/usr/lib/python3.13/http/server.py", line 415, in handle_one_request
-    self.raw_requestline = self.rfile.readline(65537)
-                           ~~~~~~~~~~~~~~~~~~~^^^^^^^
-  File "/usr/lib/python3.13/socket.py", line 719, in readinto
-    return self._sock.recv_into(b)
-           ~~~~~~~~~~~~~~~~~~~~^^^
-ConnectionResetError: [Errno 104] Connection reset by peer
-----------------------------------------
+127.0.0.1 - - [09/Jan/2026 19:29:56] "GET /index.html HTTP/1.1" 304 -
+127.0.0.1 - - [09/Jan/2026 19:29:56] "GET /css/style.css HTTP/1.1" 304 -
+127.0.0.1 - - [09/Jan/2026 19:29:56] "GET /js/wall.js HTTP/1.1" 200 -
+127.0.0.1 - - [09/Jan/2026 19:30:05] "GET /index.html HTTP/1.1" 304 -
