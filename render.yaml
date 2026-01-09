@@ -1,0 +1,32 @@
+services:
+  # Web Service (Backend + Static Files)
+  - type: web
+    name: bangladesh-business-corner
+    env: node
+    region: singapore
+    plan: free
+    buildCommand: cd backend && npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: DATABASE_URL
+        fromDatabase:
+          name: pixel-wall-db
+          property: connectionString
+      - key: CORS_ORIGIN
+        value: "*"
+      - key: RATE_LIMIT_WINDOW_MS
+        value: 900000
+      - key: RATE_LIMIT_MAX_REQUESTS
+        value: 100
+    healthCheckPath: /api/health
+
+# Database (Optional - if you want Render to create one for you)
+# If you're using external Neon DB, remove this section
+# databases:
+#   - name: pixel-wall-db
+#     plan: free
+#     region: singapore

@@ -26,7 +26,7 @@ app.use(helmet({
 
 // CORS configuration
 const corsOptions = {
-  origin: process.env.CORS_ORIGIN || 'http://localhost:8000',
+  origin: process.env.CORS_ORIGIN || '*',
   methods: ['GET', 'POST', 'PATCH', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
@@ -53,6 +53,10 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Compression middleware
 app.use(compression());
+
+// Serve static files from parent directory
+const path = require('path');
+app.use(express.static(path.join(__dirname, '..')));
 
 // Logging middleware
 if (process.env.NODE_ENV === 'development') {
@@ -118,7 +122,7 @@ const server = app.listen(PORT, () => {
 ║  Million Pixel Wall API Server             ║
 ║  Environment: ${process.env.NODE_ENV || 'development'}                   ║
 ║  Port: ${PORT}                               ║
-║  CORS Origin: ${process.env.CORS_ORIGIN || 'http://localhost:8000'}   ║
+║  CORS Origin: ${process.env.CORS_ORIGIN || '*'}              ║
 ╚════════════════════════════════════════════╝
   `);
 });

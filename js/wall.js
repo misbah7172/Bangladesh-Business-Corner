@@ -15,13 +15,17 @@ class PixelWall {
         this.WALL_SIZE = 1000;
         this.MIN_BLOCK_SIZE = 10;
         this.GRID_SIZE = 100; // For tiling future optimization
-        this.API_BASE_URL = 'http://localhost:3000/api';
+        // Auto-detect API URL based on environment
+        this.API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+            ? 'http://localhost:3000/api' 
+            : `${window.location.protocol}//${window.location.hostname}/api`;
         
         // State
         this.ads = [];
         this.isDragging = false;
         this.lastX = 0;
         this.lastY = 0;
+        this.scale = 1; // For mobile scaling
         
         // DOM elements
         this.wallElement = document.getElementById('pixelWall');
@@ -52,6 +56,10 @@ class PixelWall {
             
             // Update stats
             this.updateStats();
+            
+            // Handle mobile scaling
+            this.handleMobileScale();
+            window.addEventListener('resize', () => this.handleMobileScale());
             
         } catch (error) {
             console.error('Failed to initialize:', error);
@@ -303,6 +311,31 @@ class PixelWall {
         this.updateStats();
         
         return true;
+    }
+    
+    /**
+     * Handle mobile scaling for proper canvas display
+     */
+    handleMobileScale() {
+        if (!this.wrapperElement || !this.wallElement) return;
+        
+        const wrapperWidth = this.wrapperElement.clientWidth;
+        const wrapperHeight = this.wrapperElement.clientHeight;
+        
+        // On mobile, scale the entire wall to fit the wrapper
+        if (window.innerWidth <= 768) {
+            const scale = Math.min(wrapperWidth / this.WALL_SIZE, wrapperHeight / this.WALL_SIZE);
+            this.scale = scale;
+            this.wallElement.style.transform = `scale(${scale})`;
+            this.wallElement.style.transformOrigin = 'top left';
+            this.wallElement.style.width = `${this.WALL_SIZE}px`;
+            this.wallElement.style.height = `${this.WALL_SIZE}px`;
+        } else {
+            this.scale = 1;
+            this.wallElement.style.transform = 'none';
+            this.wallElement.style.width = `${this.WALL_SIZE}px`;
+            this.wallElement.style.height = `${this.WALL_SIZE}px`;
+        }
     }
 }
 

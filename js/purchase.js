@@ -9,7 +9,10 @@ class PurchaseManager {
         this.WALL_SIZE = 1000;
         this.MIN_SIZE = 1; // Minimum 1 pixel
         this.PRICE_PER_PIXEL = 1; // ৳1 per pixel
-        this.API_BASE_URL = 'http://localhost:3000/api';
+        // Auto-detect API URL based on environment
+        this.API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+            ? 'http://localhost:3000/api' 
+            : `${window.location.protocol}//${window.location.hostname}/api`;
         
         // State
         this.ads = [];
@@ -267,7 +270,7 @@ class PurchaseManager {
             console.error('Error checking availability:', error);
             this.showMessage(
                 `⚠️ Could not check availability: ${error.message}. ` +
-                `Backend server must be running on http://localhost:3000`,
+                `Backend server must be running`,
                 'error'
             );
         }
@@ -353,7 +356,7 @@ class PurchaseManager {
             this.showMessage(
                 `⚠️ Failed to create ad: ${error.message}<br><br>` +
                 `Please ensure:<br>` +
-                `• Backend server is running on http://localhost:3000<br>` +
+                `• Backend server is running<br>` +
                 `• Database is connected<br>` +
                 `• All required fields are filled correctly<br><br>` +
                 `<a href="index.html">Return to wall</a>`,
